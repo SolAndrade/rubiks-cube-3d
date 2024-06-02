@@ -1,8 +1,12 @@
+import * as THREE from 'three';
+
 export default class MouseInteraction {
-    constructor(cube) {
+    constructor(cube, faceRotations) {
         this.cube = cube;
+        this.faceRotations = faceRotations;
         this.isDragging = false;
         this.previousMousePosition = { x: 0, y: 0 };
+        this.intersectedFace = null;
 
         // Event listeners
         document.addEventListener('mousedown', this.onMouseDown.bind(this));
@@ -12,8 +16,12 @@ export default class MouseInteraction {
 
         // Auto rotation timer
         this.autoRotationTimer = null;
-        this.startAutoRotationTimer();
-        this.shouldRotate = false;
+        this.shouldRotate = true;
+        this.autoRotate();
+
+
+        this.raycaster = new THREE.Raycaster();
+        this.mouse = new THREE.Vector2();
     }
 
     onMouseDown(event) {
@@ -24,10 +32,34 @@ export default class MouseInteraction {
             x: event.clientX,
             y: event.clientY
         };
+
+        // Get the intersected face
+        this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+        this.mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+        this.raycaster.setFromCamera(this.mouse, this.cube.camera);
+        const intersects = this.raycaster.intersectObjects(this.cube.cubies);
+
+        if (intersects.length > 0) {
+            this.intersectedFace = this.getFaceFromNormal(intersects[0].face.normal);
+        }
+        
+        if (this.intersectedFace === 'front') {
+            this.faceRotations.rotateFrontFace();
+        }
+    }
+
+    getFaceFromNormal(normal) {
+        if (normal.equals(new THREE.Vector3(0, 0, 1))) return 'front';
+        if (normal.equals(new THREE.Vector3(0, 0, -1))) return 'back';
+        if (normal.equals(new THREE.Vector3(-1, 0, 0))) return 'left';
+        if (normal.equals(new THREE.Vector3(1, 0, 0))) return 'right';
+        if (normal.equals(new THREE.Vector3(0, 1, 0))) return 'top';
+        if (normal.equals(new THREE.Vector3(0, -1, 0))) return 'bottom';
     }
 
     onMouseMove(event) {
-        if (this.isDragging) {
+        if (this.isDragging && this.intersectedFace) {
             this.shouldRotate = false;
             const deltaMove = {
                 x: event.clientX - this.previousMousePosition.x,
@@ -45,6 +77,7 @@ export default class MouseInteraction {
                 x: event.clientX,
                 y: event.clientY
             };
+
         }
     }
 
@@ -70,7 +103,7 @@ export default class MouseInteraction {
         this.autoRotationTimer = setTimeout(() => {
             this.shouldRotate = true;
             this.autoRotate();
-        }, 5000); // 5 seconds
+        }, 3000); // 3 seconds
     }
 
     clearAutoRotationTimer() {

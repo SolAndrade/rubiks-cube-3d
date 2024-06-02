@@ -18,6 +18,7 @@ html, body
     bottom: 0;
     display: flex;
     justify-content: center;
+    align-items: end;
     margin-bottom: 20px;
     color: #ffffff;
     text-align: right;
@@ -28,4 +29,8 @@ html, body
 {
     color: inherit;
     margin: 0px 5px;
+}
+
+.name {
+    font: 400 17px 'Shadows Into Light Two', cursive;
 }
