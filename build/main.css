@@ -32,14 +32,7 @@ html, body
 }
 
 .name {
-    font: 400 17px 'Inter', sans-serif;
+    font: 400 17px 'Shadows Into Light Two', cursive;
 }
 
-@media screen and (max-width: 600px) {
-    .credits {
-        font-size: 14px;
-    }
-    .name {
-        font-size: 15px;
-    }
-} 
+/*# sourceMappingURL=main.css.map*/
