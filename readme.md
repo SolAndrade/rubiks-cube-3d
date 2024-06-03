@@ -2,8 +2,8 @@
 
 ## Links
 
-- [GitHub]()
-- [Live]()
+- [GitHub](https://github.com/SolAndrade/rubiks-cube-3d)
+- [Live](https://solandrade.github.io/rubiks-cube-3d/)
 
 ## Setup
 
